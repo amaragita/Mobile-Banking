@@ -172,7 +172,7 @@ class HomePage extends StatelessWidget {
         Text('Luh Putu Amaragita Tiarani Wicaya'),
         SizedBox(height: 5),
         Text('Total Saldo Anda', style: TextStyle(fontWeight: FontWeight.bold)),
-        Text('Rp. 1.200.0000'),
+        Text('Rp. 1.200.000'),
       ],
     ),
   ),
