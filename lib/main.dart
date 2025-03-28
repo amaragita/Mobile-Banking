@@ -150,34 +150,33 @@ class HomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Card(
-  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-  child: ListTile(
-    leading: Container(
-      width: 60, // Perbesar container sesuai keinginan
-      height: 90, // Sesuaikan agar tetap proporsional
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8), // Opsional untuk sudut melengkung
-        image: DecorationImage(
-          image: NetworkImage(
-            'https://raw.githubusercontent.com/amaragita/Tugas-Layout-1/main/Foto%204x6.png',
-          ),
-          fit: BoxFit.contain, // Pastikan gambar tetap proporsional tanpa terpotong
-        ),
-      ),
-    ),
-    title: Text('Nasabah', style: TextStyle(fontWeight: FontWeight.bold)),
-    subtitle: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Luh Putu Amaragita Tiarani Wicaya'),
-        SizedBox(height: 5),
-        Text('Total Saldo Anda', style: TextStyle(fontWeight: FontWeight.bold)),
-        Text('Rp. 1.200.000'),
-      ],
-    ),
-  ),
-),
-
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              child: ListTile(
+                leading: Container(
+                  width: 60,
+                  height: 90,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        'https://raw.githubusercontent.com/amaragita/Tugas-Layout-1/main/Foto%204x6.png',
+                      ),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+                title: Text('Nasabah', style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Luh Putu Amaragita Tiarani Wicaya'),
+                    SizedBox(height: 5),
+                    Text('Total Saldo Anda', style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text('Rp. 1.200.000'),
+                  ],
+                ),
+              ),
+            ),
             SizedBox(height: 20),
             GridView.count(
               shrinkWrap: true,
@@ -185,12 +184,12 @@ class HomePage extends StatelessWidget {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
               children: [
-                _buildMenuItem(Icons.account_balance_wallet, 'Cek Saldo'),
-                _buildMenuItem(Icons.sync_alt, 'Transfer'),
-                _buildMenuItem(Icons.savings, 'Deposito'),
-                _buildMenuItem(Icons.payment, 'Pembayaran'),
-                _buildMenuItem(Icons.business_center, 'Pinjaman'),
-                _buildMenuItem(Icons.receipt, 'Mutasi'),
+                _buildMenuItem(context, Icons.account_balance_wallet, 'Cek Saldo', CekSaldoPage()),
+                _buildMenuItem(context, Icons.sync_alt, 'Transfer', TransferPage()),
+                _buildMenuItem(context, Icons.savings, 'Deposito', DepositoPage()),
+                _buildMenuItem(context, Icons.payment, 'Pembayaran', PembayaranPage()),
+                _buildMenuItem(context, Icons.business_center, 'Pinjaman', PinjamanPage()),
+                _buildMenuItem(context, Icons.receipt, 'Mutasi', MutasiPage()),
               ],
             ),
             SizedBox(height: 20),
@@ -237,14 +236,237 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuItem(IconData icon, String label) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, size: 40, color: Colors.blue[800]),
-        SizedBox(height: 5),
-        Text(label, textAlign: TextAlign.center),
-      ],
+  Widget _buildMenuItem(BuildContext context, IconData icon, String label, Widget page) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => page),
+        );
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 40, color: Colors.blue[800]),
+          SizedBox(height: 5),
+          Text(label, textAlign: TextAlign.center),
+        ],
+      ),
+    );
+  }
+}
+
+class CekSaldoPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Cek Saldo')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Saldo Anda Saat Ini:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            SizedBox(height: 10),
+            Text('Rp. 1.200.000', style: TextStyle(fontSize: 24, color: Colors.green)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TransferPage extends StatefulWidget {
+  @override
+  _TransferPageState createState() => _TransferPageState();
+}
+
+class _TransferPageState extends State<TransferPage> {
+  String? _selectedMethod;
+  final TextEditingController _accountController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Transfer')),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            DropdownButtonFormField<String>(
+              value: _selectedMethod,
+              items: [
+                DropdownMenuItem(value: 'Rekening Sendiri', child: Text('Rekening Sendiri')),
+                DropdownMenuItem(value: 'Antarbank', child: Text('Antarbank')),
+                DropdownMenuItem(value: 'Virtual Account Billing', child: Text('Virtual Account Billing')),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  _selectedMethod = value;
+                });
+              },
+              decoration: InputDecoration(
+                labelText: 'Pilih Metode Transfer',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: _accountController,
+              decoration: InputDecoration(labelText: 'Nomor Rekening Tujuan', border: OutlineInputBorder()),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              controller: _amountController,
+              decoration: InputDecoration(labelText: 'Jumlah Transfer', border: OutlineInputBorder()),
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                if (_selectedMethod == null || _accountController.text.isEmpty || _amountController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Harap lengkapi semua data!')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Transfer berhasil!')),
+                  );
+                }
+              },
+              child: Text('Kirim'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue[800]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DepositoPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Deposito')),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            Text('Pilih Jangka Waktu Deposito:', style: TextStyle(fontSize: 16)),
+            SizedBox(height: 10),
+            DropdownButtonFormField<String>(
+              items: ['3 Bulan', '6 Bulan', '12 Bulan']
+                  .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                  .toList(),
+              onChanged: (value) {
+                // Handle selection
+              },
+              decoration: InputDecoration(border: OutlineInputBorder()),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              decoration: InputDecoration(labelText: 'Jumlah Deposito', border: OutlineInputBorder()),
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Add deposito logic here
+              },
+              child: Text('Simpan'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue[800]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PembayaranPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Pembayaran')),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(labelText: 'Nomor Tagihan', border: OutlineInputBorder()),
+            ),
+            SizedBox(height: 10),
+            TextField(
+              decoration: InputDecoration(labelText: 'Jumlah Pembayaran', border: OutlineInputBorder()),
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Add payment logic here
+              },
+              child: Text('Bayar'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue[800]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PinjamanPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Pinjaman')),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(labelText: 'Jumlah Pinjaman', border: OutlineInputBorder()),
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 10),
+            TextField(
+              decoration: InputDecoration(labelText: 'Jangka Waktu (bulan)', border: OutlineInputBorder()),
+              keyboardType: TextInputType.number,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // Add loan logic here
+              },
+              child: Text('Ajukan'),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue[800]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MutasiPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Mutasi')),
+      body: ListView.builder(
+        padding: EdgeInsets.all(20),
+        itemCount: 5, // Replace with actual transaction count
+        itemBuilder: (context, index) {
+          return Card(
+            child: ListTile(
+              title: Text('Transaksi ${index + 1}'),
+              subtitle: Text('Detail transaksi ${index + 1}'),
+              trailing: Text('- Rp. 100.000', style: TextStyle(color: Colors.red)),
+            ),
+          );
+        },
+      ),
     );
   }
 }
